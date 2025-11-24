@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "tsx watch --env-file .env app.ts",
-    "start": "node app.ts"
+    "start": "tsx app.ts"
   },
   "license": "MIT",
   "dependencies": {
