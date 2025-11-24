@@ -1,0 +1,43 @@
+# =======================================
+# Node / Express / TypeScript Project
+# =======================================
+
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+*.log
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# TypeScript
+dist/
+build/
+*.tsbuildinfo
+
+# VSCode settings
+.vscode/
+
+# Local compiled assets (if you ever add them)
+public/*.map
+
+# Passport session data (if stored locally)
+sessions/
+
+# Cache
+.cache/
+tmp/
+temp/
+
+# Optional
+coverage/
