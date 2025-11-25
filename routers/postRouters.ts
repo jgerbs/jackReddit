@@ -26,6 +26,10 @@ router.post("/create", ensureAuthenticated, async (req, res) => {
     return res.status(400).send("Title and subgroup are required.");
   }
 
+  if (!link && !description) {
+    return res.status(400).send("You must provide a link or a description.");
+  }
+
   const creator = req.user.id; // fake-db uses creator = user.id
 
   await database.createPost({
@@ -107,7 +111,7 @@ router.post("/comment-create/:postid", ensureAuthenticated, async (req, res) => 
 
   await database.createComment(
     req.params.postid,
-    req.user.id, // fake-db uses numeric ID
+    req.user.id,
     description
   );
 
@@ -116,7 +120,7 @@ router.post("/comment-create/:postid", ensureAuthenticated, async (req, res) => 
 
 // DELETE COMMENT
 router.post("/comment-delete/:commentid", ensureAuthenticated, async (req, res) => {
-  const commentId = Number( req.params.commentid);
+  const commentId = Number(req.params.commentid);
   const comment = await database.getCommentById(commentId);
 
   if (!comment) return res.status(404).send("Comment not found");
