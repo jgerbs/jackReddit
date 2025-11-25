@@ -2,7 +2,7 @@
 import express from "express";
 import * as database from "../controller/postController";
 import { ensureAuthenticated } from "../middleware/checkAuth";
-import * as fakeDb from "../fake-db";
+import * as fakeDb from "../db";
 
 const router = express.Router();
 

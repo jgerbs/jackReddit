@@ -1,20 +1,15 @@
-import * as db from "../fake-db";
+// @ts-nocheck
+import * as db from "../db";
 
-export const getUserByEmailIdAndPassword = async (
-  uname: string,
-  password: string
-) => {
-  const user = db.getUserByUsername(uname);
-  if (!user) {
-    return null;
-  }
-  if (user.password === password) {
-    return user;
-  }
-  return null;
-};
+// Find user by uname + password
+export async function getUserByEmailIdAndPassword(uname, password) {
+  const user = await db.getUserByUname(uname);
+  if (!user) return null;
+  if (user.password !== password) return null; // plaintext (basic demo)
+  return user;
+}
 
-export const getUserById = async (id: string | number) => {
-  const user = db.getUser(Number(id));
-  return user ? user : null;
-};
+// Find user by ID (for deserializeUser)
+export function getUserById(id) {
+  return db.getUser(id);
+}

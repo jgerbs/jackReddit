@@ -433,13 +433,22 @@ body {
   font-weight: bold;
 }
 
-.jr-auth-dev-warning {
-  color: #b91c1c;
-  background: #fee2e2;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 15px;
+.jr-auth-info-orange {
+  background: #fff4e6;
+  border-left: 4px solid #ff8a00;
+  color: #7a3f00;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
 }
+
+.jr-auth-info-label {
+  font-weight: 700;
+  color: #ff8a00;
+  margin-right: 6px;
+}
+
 
 .jr-auth-form {
   display: flex;
@@ -474,3 +483,4 @@ body {
 .jr-orange:hover {
   background: #d63a00; /* darker orange hover */
 }
+

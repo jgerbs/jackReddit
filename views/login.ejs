@@ -21,12 +21,15 @@
       <% } %>
 
         <% if (devMode) { %>
-          <p class="jr-auth-dev-warning">Dev mode: autofilled credentials for alice / alpha.</p>
+          <div class="jr-auth-info-orange">
+            <span class="jr-auth-info-label">Dev Mode</span>
+            Autofilled credentials: <strong>jack</strong> or <strong>alice</strong> / <strong>alpha</strong>.
+          </div>
           <% } %>
 
             <form action="/auth/login" method="post" class="jr-auth-form">
 
-              <input type="text" name="uname" placeholder="Username" value="<%= devMode ? 'alice' : '' %>"
+              <input type="text" name="uname" placeholder="Username" value="<%= devMode ? 'jack' : '' %>"
                 class="jr-auth-input" />
 
               <input type="password" name="password" placeholder="Password" value="<%= devMode ? 'alpha' : '' %>"
@@ -35,7 +38,6 @@
               <button type="submit" class="jr-auth-btn jr-orange">Login</button>
 
             </form>
-
   </div>
 </body>
 

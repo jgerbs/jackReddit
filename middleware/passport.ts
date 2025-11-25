@@ -3,14 +3,14 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import {
   getUserByEmailIdAndPassword,
-  getUserById,
+  getUserById
 } from "../controller/userController";
 
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "uname",
-      passwordField: "password",
+      usernameField: "uname",     // matches login.ejs
+      passwordField: "password",  // matches login.ejs
     },
     async (uname, password, done) => {
       try {
@@ -26,16 +26,14 @@ passport.use(
   )
 );
 
-passport.serializeUser((user: any, done) => {
+passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser(async (id: any, done) => {
+passport.deserializeUser(async (id, done) => {
   try {
     const user = await getUserById(id);
-    if (!user) {
-      return done(null, false);
-    }
+    if (!user) return done(null, false);
     return done(null, user);
   } catch (err) {
     return done(err);

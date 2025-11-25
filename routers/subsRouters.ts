@@ -1,6 +1,6 @@
 // const { ensureAuthenticated } = require("../middleware/checkAuth");
 import express from "express";
-import * as database from "../fake-db";
+import * as database from "../db";
 const router = express.Router();
 
 router.get("/list", async (req, res) => {
@@ -13,7 +13,7 @@ router.get("/list", async (req, res) => {
 
 router.get("/show/:subname", async (req, res) => {
   const subname: string = req.params.subname;
-  const posts = database.getPosts(50, subname);
+  const posts = await database.getPosts(50, subname);
 
   const user = req.user;
   res.render("sub", { subname, posts, user });
