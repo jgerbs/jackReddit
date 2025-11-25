@@ -1,8 +1,8 @@
 // @ts-nocheck
 import express from "express";
-import * as database from "../controller/postController";
 import { ensureAuthenticated } from "../middleware/checkAuth";
-import * as fakeDb from "../db";
+import * as database from "../controller/postController";
+import { error } from "console";
 
 const router = express.Router();
 
@@ -15,32 +15,48 @@ router.get("/", async (req, res) => {
 
 // CREATE FORM
 router.get("/create", ensureAuthenticated, (req, res) => {
-  res.render("createPosts", { user: req.user });
+  res.render("createPosts", { user: req.user, errors: [], formData: {} });
 });
 
 // CREATE POST
 router.post("/create", ensureAuthenticated, async (req, res) => {
   const { title, link, description, sub } = req.body;
 
-  if (!title || !sub) {
-    return res.status(400).send("Title and subgroup are required.");
+  const creator = req.user.id;
+  const errors = [];
+
+  // VALIDATION
+  if (!title?.trim()) {
+    errors.push("Title is required.");
   }
 
-  if (!link && !description) {
-    return res.status(400).send("You must provide a link or a description.");
+  if (!sub?.trim()) {
+    errors.push("Subgroup is required.");
   }
 
-  const creator = req.user.id; // fake-db uses creator = user.id
+  if (!link?.trim() && !description?.trim()) {
+    errors.push("You must provide a link OR a description.");
+  }
 
-  await database.createPost({
+  // If validation fails → re-render form with error + input values
+  if (errors.length > 0) {
+    return res.render("createPosts", {
+      user: req.user,
+      errors,
+      formData: { title, link, description, sub }
+    });
+  }
+
+  // SUCCESS
+  const post = await database.createPost({
     title,
     link,
     description,
     subgroup: sub,
-    creator,
+    creator
   });
 
-  res.redirect("/posts");
+  res.redirect(`/posts/show/${post.id}`);
 });
 
 // SHOW POST
@@ -62,22 +78,54 @@ router.get("/edit/:postid", ensureAuthenticated, async (req, res) => {
   if (!post) return res.status(404).send("Post not found");
   if (post.creator.id !== req.user.id) return res.status(403).send("Not authorized");
 
-  res.render("editPost", { post, user: req.user });
+  res.render("editPost", {
+    post,
+    user: req.user,
+    errors: [],
+    formData: {
+      title: post.title,
+      link: post.link,
+      description: post.description,
+    }
+  });
 });
 
 // UPDATE POST
 router.post("/edit/:postid", ensureAuthenticated, async (req, res) => {
-  const post = await database.getPostById(req.params.postid);
+  const { title, link, description } = req.body;
 
+  const post = await database.getPostById(req.params.postid);
   if (!post) return res.status(404).send("Post not found");
   if (post.creator.id !== req.user.id) return res.status(403).send("Not authorized");
 
-  const { title, link, description } = req.body;
+  const errors = [];
 
-  await database.updatePost(req.params.postid, { title, link, description });
+  // VALIDATION
+  if (!title?.trim()) errors.push("Title is required.");
+  if (!link?.trim() && !description?.trim()) {
+    errors.push("You must provide a link OR a description.");
+  }
+
+  // If invalid, re-render with warnings
+  if (errors.length > 0) {
+    return res.render("editPost", {
+      user: req.user,
+      post,
+      errors,
+      formData: { title, link, description }
+    });
+  }
+
+  // SUCCESS
+  await database.updatePost(req.params.postid, {
+    title,
+    link,
+    description
+  });
 
   res.redirect(`/posts/show/${req.params.postid}`);
 });
+
 
 // DELETE CONFIRM
 router.get("/deleteconfirm/:postid", ensureAuthenticated, async (req, res) => {
